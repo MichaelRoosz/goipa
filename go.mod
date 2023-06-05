@@ -1,4 +1,4 @@
-module github.com/fbiering/goipa
+module github.com/MichaelRoosz/goipa
 
 go 1.14
 
