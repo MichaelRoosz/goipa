@@ -14,7 +14,7 @@ Usage
 
 Install using go tools::
 
-    $ go get github.com/ubccr/goipa
+    $ go get github.com/MichaelRoosz/goipa-mr
 
 Example calling FreeIPA user-show:
 
