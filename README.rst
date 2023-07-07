@@ -25,7 +25,7 @@ Example calling FreeIPA user-show:
     import (
         "fmt"
 
-        "github.com/ubccr/goipa"
+        "github.com/MichaelRoosz/goipa-mr"
     )
 
     func main() {
