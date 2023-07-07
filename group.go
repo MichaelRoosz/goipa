@@ -18,6 +18,7 @@ type GroupRecord struct {
 	GidNumber   []string `json:"gidnumber"`
 	ObjectClass []string `json:"objectclass"`
 	Users       []string `json:"member_user"`
+	Groups      []string `json:"member_group"`
 }
 
 var ErrorGroupRecordNotInitialized = errors.New("group record is not initialized")
@@ -123,6 +124,30 @@ func (c *Client) AddUserToGroup(groupCn string, userUid string) (*GroupRecord, e
 	return groupRec, nil
 }
 
+func (c *Client) AddGroupToGroup(groupCn string, groupName string) (*GroupRecord, error) {
+	var groupRec *GroupRecord
+
+	var options = map[string]interface{}{
+		"no_members": false,
+		"raw":        false,
+		"all":        false,
+		"group":       []string{groupName},
+	}
+
+	res, err := c.rpc("group_add_member", []string{groupCn}, options)
+	if err != nil {
+		return groupRec, err
+	}
+
+	err = json.Unmarshal(res.Result.Data, &groupRec)
+	if err != nil {
+		return groupRec, err
+	}
+
+	return groupRec, nil
+}
+
+
 func (c *Client) RemoveUserFromGroup(groupCn string, userUid string) error {
 	var options = map[string]interface{}{
 		"no_members": false,
@@ -147,6 +172,21 @@ func (c *Client) CheckUserMemberOfGroup(userName, groupName string) (bool, error
 
 	for _, u := range group.Users {
 		if u == userName {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (c *Client) CheckGroupMemberOfGroup(memberGroupName, groupName string) (bool, error) {
+	group, err := c.GroupShow(groupName)
+	if err != nil {
+		return false, err
+	}
+
+	for _, u := range group.Groups {
+		if u == memberGroupName {
 			return true, nil
 		}
 	}
